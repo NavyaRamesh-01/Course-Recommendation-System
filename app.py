@@ -139,6 +139,7 @@ if predict_button:
             if not res_df.empty:
                 st.toast('Results found!', icon='🎉')
                 st.markdown(f"## Best matches for '{user_skill.title()}'")
+                display_df = res_df
             else:
                 # TRIGGER FALLBACK
                 st.warning(f"Sorry, we couldn't find specific courses for '{user_skill.title()}'.")
