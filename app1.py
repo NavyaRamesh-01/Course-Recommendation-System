@@ -77,13 +77,13 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
 
 # --- SIDEBAR UI ---
 with st.sidebar:
-    st.title("Filters")
+    st.title("Set preferences")
     user_skill = st.text_input("🎯 What skill?", placeholder="e.g. SQL")
     user_difficulty = st.selectbox("📊 Level", ["Beginner", "Intermediate", "Mixed"])
-    user_description = st.text_area("📝 Goal", placeholder="e.g. project-based learning")
+    user_description = st.text_area("📝 Learning goal", placeholder="e.g. project-based learning")
     
     st.markdown("---")
-    predict_button = st.button('Search Courses', use_container_width=True)
+    predict_button = st.button('Discover Courses', use_container_width=True)
 
 # --- MAIN PAGE UI ---
 if predict_button:
