@@ -69,7 +69,7 @@ def load_and_process_data():
 
 new_df, vectors, cv = load_and_process_data()
 
-def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
+def recommend_courses(user_vector, new_df, user_difficulty, course_vectors, threshold=0.15):
     similarities = cosine_similarity(user_vector, course_vectors).flatten()
     sorted_indices = similarities.argsort()[::-1]
     
@@ -82,7 +82,9 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
         course_difficulty = new_df.iloc[idx]['level'].lower()
         course_rating = new_df.iloc[idx]['final_rating']
         raw_similarity = similarities[idx]
-        
+        # STOP if the match is too weak
+        if raw_sim < threshold:
+            continue
         if user_difficulty.lower() != 'mixed' and course_difficulty != user_difficulty.lower():
             continue
         if course_rating < 3.5:
@@ -98,6 +100,20 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
         if len(recommendations) >= 5: 
             break
             
+    return pd.DataFrame(recommendations)
+
+# --- FALLBACK LOGIC ---
+def get_trending_courses(df):
+    # Just grab the top 5 highest rated courses in the whole dataset
+    trending = df.sort_values(by='final_rating', ascending=False).head(5)
+    recommendations = []
+    for i in range(len(trending)):
+        recommendations.append({
+            'Title': trending.iloc[i]['final_title'].title(),
+            'Difficulty': trending.iloc[i]['level'].capitalize(),
+            'Rating': trending.iloc[i]['final_rating'],
+            'URL': trending.iloc[i]['url']
+        })
     return pd.DataFrame(recommendations)
 
 # --- SIDEBAR UI ---
@@ -123,21 +139,24 @@ if predict_button:
             if not res_df.empty:
                 st.toast('Results found!', icon='🎉')
                 st.markdown(f"## Best matches for '{user_skill.title()}'")
-                
-                col1, col2 = st.columns(2)
-                for i, row in res_df.iterrows():
-                    target_col = col1 if i % 2 == 0 else col2
-                    with target_col:
-                        st.markdown(f"""
-                            <div class="course-card">
-                                <h3 style="color: #7e57c2; margin-bottom:0;">{row['Title']}</h3>
-                                <p style="color: gray;"><b>{row['Difficulty']}</b> | ⭐ {row['Rating']}</p>
-                            </div>
-                        """, unsafe_allow_html=True)
-                        st.link_button("View Course on Coursera", row['URL'], use_container_width=True)
-                        st.write("") 
             else:
-                st.error("No matches found. Try modifying your search!")
+                # TRIGGER FALLBACK
+                st.warning(f"Sorry, we couldn't find specific courses for '{user_skill.title()}'.")
+                st.markdown("### But you might find these <span style='color: #00b894;'>Trending Courses</span> interesting:", unsafe_allow_html=True)
+                display_df = get_trending_courses(new_df)
+            col1, col2 = st.columns(2)
+            for i, row in display_df.iterrows():
+                target_col = col1 if i % 2 == 0 else col2
+                with target_col:
+                    st.markdown(f"""
+                        <div class="course-card">
+                            <h3 style="color: #7e57c2; margin-bottom:0;">{row['Title']}</h3>
+                            <p style="color: gray;"><b>{row['Difficulty']}</b> | ⭐ {row['Rating']}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
+                    st.link_button("View Course on Coursera", row['URL'], use_container_width=True)
+                    st.write("") 
+
     else:
         st.warning("Please enter a skill in the sidebar.")
 
