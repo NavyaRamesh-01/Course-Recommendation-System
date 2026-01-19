@@ -129,7 +129,7 @@ else:
     st.write("")
     col_img, col_txt = st.columns([1, 1])
     with col_img:
-        st.image("https://img.freepik.com/free-vector/female-student-with-laptop-studying-online-at-home_23-2148530353.jpg", use_column_width=True)
+        st.image("https://www.freepik.com/free-vector/cartoon-style-programmer-working_5357180.htm#fromView=search&page=1&position=2&uuid=88774223-a390-425a-b2ed-0bbe4d200e70&query=a+girl+working+on+laptop", use_column_width=True)
     with col_txt:
         st.markdown("""
             <br><br><br>
