@@ -37,7 +37,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
         course_rating = new_df.iloc[idx]['final_rating']
         raw_similarity = similarities[idx]
         
-        if user_difficulty != 'mixed' and course_difficulty != user_difficulty.lower():
+        if user_difficulty.lower() != 'mixed' and course_difficulty != user_difficulty.lower():
             continue
         if course_rating < 3.5:
             continue
