@@ -15,6 +15,9 @@ Used the [Coursera Courses Metadata & Reviews 2025](https://www.kaggle.com/datas
 4. **Ranking:** Applied a custom ranking algorithm that boosts courses with higher ratings.
 
 ### 📂 Project Structure
-- `app.py`: The Streamlit web interface logic.
-- `Data_Cleaning.ipynb`: The original notebook used for data exploration and preprocessing.
-- `course_list.pkl`: The processed data exported for the app.
+```text
+├── app.py                           # Streamlit web application logic
+├── course_list.pkl                  # Pre-processed data (exported from Colab)
+├── requirements.txt                 # List of required Python libraries
+├── course recommendation system.ipynb # Data cleaning, EDA, and model logic
+└── README.md                        # Project documentation
