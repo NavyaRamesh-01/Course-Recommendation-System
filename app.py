@@ -97,7 +97,7 @@ if predict_button:
             
             if not res_df.empty:
                 st.toast('Results found!', icon='🎉')
-                st.markdown(f"## Best matches for '{user_skill}.title()'")
+                st.markdown(f"## Best matches for '{user_skill}'.title()")
                 
                 col1, col2 = st.columns(2)
                 for i, row in res_df.iterrows():
