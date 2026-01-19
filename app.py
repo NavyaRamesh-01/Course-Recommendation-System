@@ -9,8 +9,15 @@ from nltk.stem.porter import PorterStemmer
 st.set_page_config(page_title="Course Recommender AI", page_icon="🎓", layout="wide")
 
 # Custom CSS for UI styling
+# Custom CSS for UI styling
 st.markdown("""
     <style>
+    /* Main Sidebar Background */
+    [data-testid="stSidebar"] {
+        background-color: #f3e5f5; /* Light Purple */
+    }
+
+    /* Course Card Styling */
     .course-card {
         background-color: #ffffff;
         padding: 25px;
@@ -19,6 +26,24 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-bottom: 20px;
     }
+
+    /* Button Styling */
+    div.stButton > button {
+        background-color: #7e57c2;
+        color: white;
+        border-radius: 10px;
+        border: none;
+        height: 3em;
+        transition: all 0.3s ease;
+    }
+
+    /* Button Hover Effect */
+    div.stButton > button:hover {
+        background-color: #5e35b1;
+        color: white;
+        border: none;
+    }
+
     .main-title {
         color: #7e57c2;
         font-size: 3em;
