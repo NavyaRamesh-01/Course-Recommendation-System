@@ -77,12 +77,10 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
 
 # --- SIDEBAR UI ---
 with st.sidebar:
-    # Stable Sidebar Image
-    st.image("https://cdn3d.iconscout.com/3d/premium/thumb/female-student-doing-online-study-on-laptop-illustration-download-in-svg-png-gif-formats--education-courses-home-learning-digital-learning-pack-people-illustrations-3681023.png", width=250)
-    st.title("Filters")
+    st.title("Set your preferences")
     user_skill = st.text_input("🎯 What skill?", placeholder="e.g. SQL")
     user_difficulty = st.selectbox("📊 Level", ["Beginner", "Intermediate", "Mixed"])
-    user_description = st.text_area("📝 Goal", placeholder="e.g. project-based learning")
+    user_description = st.text_area("📝 Additional info", placeholder="e.g. project-based learning")
     
     st.markdown("---")
     predict_button = st.button('Search Courses', use_container_width=True)
@@ -123,7 +121,6 @@ else:
     st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 2, 1])
     with c2:
-        # This is a highly reliable direct link to a female student illustration
         st.image("https://illustrations.popsy.co/purple/studying.svg", width=500)
         st.markdown("<h1 style='text-align: center; color: #7e57c2;'>Ready to Learn?</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; font-size: 1.2em;'>Use the sidebar to search for courses. Our AI will find the perfect matches for your skills and experience level.</p>", unsafe_allow_html=True)
