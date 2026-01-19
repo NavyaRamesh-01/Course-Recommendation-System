@@ -6,23 +6,71 @@ from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem.porter import PorterStemmer
 
 # --- CONFIGURATION ---
-st.set_page_config(page_title="Course Recommender AI", page_icon="🎓", layout="wide")
+st.set_page_config(page_title="Course AI", page_icon="💡", layout="wide")
 
-# Custom CSS for UI styling
+# Modern Aesthetic CSS
 st.markdown("""
     <style>
+    /* Global Styles */
+    .stApp {
+        background-color: #f8f9fa;
+    }
+    
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e0e0e0;
+    }
+
+    /* Course Card Styling */
     .course-card {
         background-color: #ffffff;
-        padding: 25px;
-        border-radius: 15px;
-        border-left: 8px solid #7e57c2;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 24px;
+        border-radius: 12px;
+        border-top: 4px solid #00b894; /* Aesthetic Emerald Green */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-bottom: 20px;
+        transition: transform 0.2s;
     }
-    .main-title {
-        color: #7e57c2;
-        font-size: 3em;
-        font-weight: bold;
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Typography */
+    h1 {
+        color: #2d3436;
+        font-family: 'Inter', sans-serif;
+        font-weight: 800 !important;
+    }
+    .course-title {
+        color: #2d3436;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .difficulty-tag {
+        background-color: #e8f8f5;
+        color: #00b894;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    /* Button Styling */
+    .stButton>button {
+        background-color: #2d3436;
+        color: white;
+        border-radius: 8px;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #00b894;
+        color: white;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -70,25 +118,27 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             'Rating': course_rating,
             'URL': new_df.iloc[idx]['url']
         })
-        if len(recommendations) >= 5: 
+        if len(recommendations) >= 6: 
             break
             
     return pd.DataFrame(recommendations)
 
 # --- SIDEBAR UI ---
 with st.sidebar:
-    st.title("Set your preferences")
-    user_skill = st.text_input("🎯 What skill?", placeholder="e.g. SQL")
-    user_difficulty = st.selectbox("📊 Level", ["Beginner", "Intermediate", "Mixed"])
-    user_description = st.text_area("📝 Additional info", placeholder="e.g. project-based learning")
+    st.markdown("<br>", unsafe_allow_html=True)
+    # Aesthetic Minimalist Icon
+    st.image("https://storyset.com/blog/wp-content/uploads/2021/04/Education-bro.png", use_column_width=True)
+    st.markdown("### Preferences")
+    user_skill = st.text_input("What skill?", placeholder="e.g. Data Science")
+    user_difficulty = st.selectbox("Level", ["Beginner", "Intermediate", "Mixed"])
+    user_description = st.text_area("Learning Goal", placeholder="e.g. I want to build real projects")
     
-    st.markdown("---")
-    predict_button = st.button('Recommend Courses', use_container_width=True)
+    predict_button = st.button('Discover Courses', use_container_width=True)
 
 # --- MAIN PAGE UI ---
 if predict_button:
     if user_skill:
-        with st.spinner('Finding the best courses...'):
+        with st.spinner('Thinking...'):
             user_query = f"{user_skill} {user_skill} {user_skill} {user_description}"
             stemmed_query = stemming(user_query.lower())
             user_vector = cv.transform([stemmed_query]).toarray()
@@ -96,8 +146,8 @@ if predict_button:
             res_df = recommend_courses(user_vector, new_df, user_difficulty, vectors)
             
             if not res_df.empty:
-                st.toast('Results found!', icon='🎉')
-                st.markdown(f"## Best matches for '{user_skill}'")
+                st.toast('Matches found!')
+                st.markdown(f"## Courses curated for your journey")
                 
                 col1, col2 = st.columns(2)
                 for i, row in res_df.iterrows():
@@ -105,22 +155,24 @@ if predict_button:
                     with target_col:
                         st.markdown(f"""
                             <div class="course-card">
-                                <h3 style="color: #7e57c2; margin-bottom:0;">{row['Title']}</h3>
-                                <p style="color: gray;"><b>{row['Difficulty']}</b> | ⭐ {row['Rating']}</p>
+                                <div class="course-title">{row['Title']}</div>
+                                <span class="difficulty-tag">{row['Difficulty']}</span>
+                                <span style="margin-left: 10px; color: #636e72;">⭐ {row['Rating']}</span>
                             </div>
                         """, unsafe_allow_html=True)
-                        st.link_button("View Course on Coursera", row['URL'], use_container_width=True)
+                        st.link_button("Go to Course", row['URL'], use_container_width=True)
                         st.write("") 
             else:
-                st.error("No matches found. Try modifying your search!")
+                st.error("Try adjusting your keywords!")
     else:
-        st.warning("Please enter a skill in the sidebar.")
+        st.warning("Please enter a skill.")
 
 else:
-    # --- WELCOME SCREEN WITH FEMALE ILLUSTRATION ---
-    st.markdown("<br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([1, 2, 1])
+    # --- AESTHETIC WELCOME SCREEN ---
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([0.5, 2, 0.5])
     with c2:
-        st.image("https://illustrations.popsy.co/purple/studying.svg", width=500)
-        st.markdown("<h1 style='text-align: center; color: #7e57c2;'>Ready to Learn?</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; font-size: 1.2em;'>Use the sidebar to search for courses. Our AI will find the perfect matches for your skills and experience level.</p>", unsafe_allow_html=True)
+        # Using a very aesthetic, soft-colored Storyset illustration
+        st.image("https://storyset.com/illustration/creative-writing/amico/google-color", use_column_width=True)
+        st.markdown("<h1 style='text-align: center;'>Expand your horizons.</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #636e72; font-size: 1.1em;'>Our AI assistant analyzes thousands of data points to find the perfect learning path for your unique career goals.</p>", unsafe_allow_html=True)
