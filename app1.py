@@ -8,28 +8,33 @@ from nltk.stem.porter import PorterStemmer
 # --- CONFIGURATION ---
 st.set_page_config(page_title="Course Recommender", page_icon="🎓", layout="wide")
 
-# Custom CSS for a better look
+# Custom CSS for a professional look
 st.markdown("""
     <style>
     .course-card {
         background-color: #ffffff;
         padding: 20px;
         border-radius: 10px;
-        border-left: 5px solid #007bff;
+        border-left: 5px solid #6c63ff;
         box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
         margin-bottom: 15px;
+        color: #31333F;
+    }
+    .stButton>button {
+        background-color: #6c63ff;
+        color: white;
     }
     </style>
     """, unsafe_allow_html=True)
 
 ps = PorterStemmer()
 
-# --- HELPER FUNCTIONS (KEEPING YOUR LOGIC) ---
+# --- HELPER FUNCTIONS (PRESERVING YOUR LOGIC) ---
 def stemming(text):
     y = []
     for i in text.split():
         y.append(ps.stem(i))
-    return " ".join(y)
+    return "".join(y)
 
 @st.cache_resource 
 def load_and_process_data():
@@ -67,29 +72,29 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             'URL': new_df.iloc[idx]['url'],
             'Score': final_score
         })
-        if len(recommendations) >= 6: # Increased to 6 for better layout
+        if len(recommendations) >= 5: 
             break
             
     return pd.DataFrame(recommendations)
 
 # --- SIDEBAR UI ---
 with st.sidebar:
-    st.title("Settings")
-    st.markdown("Enter your preferences below to find courses.")
-    user_skill = st.text_input("1. Which skill?", placeholder="e.g. Python")
-    user_difficulty = st.selectbox("2. What level?", ["Beginner", "Intermediate", "Mixed"])
-    user_description = st.text_area("3. Describe your goal", placeholder="e.g. project-based learning")
+    st.image("https://img.freepik.com/free-vector/online-certification-concept_23-2148575662.jpg", use_column_width=True)
+    st.title("Search Filters")
+    user_skill = st.text_input("1. Skill to learn", placeholder="e.g. SQL")
+    user_difficulty = st.selectbox("2. Difficulty", ["Beginner", "Intermediate", "Mixed"])
+    user_description = st.text_area("3. Your Goal", placeholder="e.g. project-based learning")
     
     st.markdown("---")
-    predict_button = st.button('Recommend Courses', use_container_width=True)
+    predict_button = st.button('Find Best Courses', use_container_width=True)
 
 # --- MAIN PAGE UI ---
-st.title("🎓 Course Recommender System")
-st.markdown("#### Personalized learning paths driven by AI")
+st.title("🎓 Course Recommender AI")
+st.markdown("#### Discover top-rated Coursera courses tailored to your goals.")
 
 if predict_button:
     if user_skill:
-        with st.spinner('Analyzing courses...'):
+        with st.spinner('Curating your courses...'):
             user_query = f"{user_skill} {user_skill} {user_skill} {user_description}"
             stemmed_query = stemming(user_query.lower())
             user_vector = cv.transform([stemmed_query]).toarray()
@@ -97,10 +102,11 @@ if predict_button:
             res_df = recommend_courses(user_vector, new_df, user_difficulty, vectors)
             
             if not res_df.empty:
-                st.success(f"Found {len(res_df)} great matches!")
-                st.balloons()
+                # Replacement for balloons: A subtle "Toast" notification
+                st.toast('Recommendations ready!', icon='✅')
                 
-                # Display in a grid
+                st.success(f"We found {len(res_df)} courses matching your request:")
+                
                 col1, col2 = st.columns(2)
                 
                 for i, row in res_df.iterrows():
@@ -108,17 +114,10 @@ if predict_button:
                     with target_col:
                         st.markdown(f"""
                             <div class="course-card">
-                                <h3>{row['Title']}</h3>
-                                <p>📊 <b>Level:</b> {row['Difficulty']} | ⭐ <b>Rating:</b> {row['Rating']}</p>
+                                <h3 style="color: #6c63ff;">{row['Title']}</h3>
+                                <p><b>Level:</b> {row['Difficulty']} | ⭐ <b>Rating:</b> {row['Rating']}</p>
                             </div>
                         """, unsafe_allow_html=True)
-                        st.link_button("View Course Details", row['URL'], use_container_width=True)
-                        st.write("") # Spacer
+                        st.link_button("🚀 Start Learning", row['URL'], use_container_width=True)
+                        st.write("") 
             else:
-                st.error("No matches found. Try changing the keywords or level!")
-    else:
-        st.warning("Please enter a skill in the sidebar to get started.")
-else:
-    # Display this when the app first loads
-    st.info("👈 Fill in your details in the sidebar and click 'Recommend Courses' to see results!")
-    st.image("https://img.freepik.com/free-vector/learning-concept-illustration_114360-6186.jpg", width=600)
