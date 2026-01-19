@@ -17,7 +17,7 @@ def stemming(text):
 @st.cache_resource # This ensures the math only happens once
 def load_and_process_data():
     df = pickle.load(open('course_list.pkl', 'rb'))
-    cv = CountVectorizer(max_features=5000, stop_words='english')
+    cv = TfidfVectorizer(max_features=5000, stop_words='english',ngram_range=(1,2))
     vectors = cv.fit_transform(df['tags']).toarray()
     return df, vectors, cv
 
@@ -42,7 +42,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
         if course_rating < 3.5:
             continue
             
-        final_score = raw_similarity * rating_boosts.iloc[idx]
+        final_score = (raw_similarity * 0.9) + (rating_boosts.iloc[idx] * 0.1)
         recommendations.append({
             'Title': new_df.iloc[idx]['final_title'],
             'Difficulty': course_difficulty.capitalize(),
@@ -60,12 +60,12 @@ st.set_page_config(page_title="Course Recommender")
 st.title("🎓 Course Recommender System")
 
 user_skill = st.text_input("1. Which skill do you want to learn?", placeholder="e.g. Python")
-user_difficulty = st.selectbox("2. What level?", ["Beginner", "Intermediate", "Advanced", "Mixed"])
+user_difficulty = st.selectbox("2. What level?", ["Beginner", "Intermediate", "Mixed"])
 user_description = st.text_area("3. Describe your goal", placeholder="e.g. project-based learning")
 
 if st.button('Recommend Courses'):
     if user_skill:
-        user_query = f"{user_skill} {user_description}"
+        user_query = f"{user_skill} {user_skill} {user_skill} {user_description}"
         stemmed_query = stemming(user_query.lower())
         user_vector = cv.transform([stemmed_query]).toarray()
         
