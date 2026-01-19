@@ -120,7 +120,7 @@ def get_trending_courses(df):
 with st.sidebar:
     st.title("Set preferences")
     user_skill = st.text_input("🎯 What skill?", placeholder="e.g. SQL")
-    user_difficulty = st.selectbox("📊 Level", ["Beginner", "Intermediate", "Mixed"])
+    user_difficulty = st.selectbox("📊 Level", ["Mixed", "Beginner", "Intermediate"])
     user_description = st.text_area("📝 Learning goal", placeholder="e.g. project-based learning")
     
     st.markdown("---")
