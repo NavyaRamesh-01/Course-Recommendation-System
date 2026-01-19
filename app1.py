@@ -126,8 +126,6 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
 # --- SIDEBAR UI ---
 with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
-    # Aesthetic Minimalist Icon
-    st.image("https://storyset.com/illustration/typing/cuate", width=5)
     st.markdown("### Preferences")
     user_skill = st.text_input("What skill?", placeholder="e.g. Data Science")
     user_difficulty = st.selectbox("Level", ["Beginner", "Intermediate", "Mixed"])
@@ -173,6 +171,6 @@ else:
     c1, c2, c3 = st.columns([0.5, 2, 0.5])
     with c2:
         # Using a very aesthetic, soft-colored Storyset illustration
-        st.image("https://storyset.com/illustration/studying/pana", width=500)
+        st.image("https://illustrations.popsy.co/purple/studying.svg", width=500)
         st.markdown("<h1 style='text-align: center; color: #6c63ff;'>Ready to Start?</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; font-size: 1.2em; color: #555;'>Enter a skill in the sidebar to discover the best Coursera courses hand-picked by AI based on relevance and user ratings.</p>", unsafe_allow_html=True)
