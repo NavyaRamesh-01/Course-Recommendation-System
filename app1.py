@@ -6,35 +6,34 @@ from sklearn.metrics.pairwise import cosine_similarity
 from nltk.stem.porter import PorterStemmer
 
 # --- CONFIGURATION ---
-st.set_page_config(page_title="Course Recommender", page_icon="🎓", layout="wide")
+st.set_page_config(page_title="Course Recommender AI", page_icon="🎓", layout="wide")
 
-# Custom CSS for a professional look
+# Custom CSS for UI styling
 st.markdown("""
     <style>
     .course-card {
         background-color: #ffffff;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #6c63ff;
-        box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 15px;
-        color: #31333F;
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 8px solid #7e57c2;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
     }
-    .stButton>button {
-        background-color: #6c63ff;
-        color: white;
+    .main-title {
+        color: #7e57c2;
+        font-size: 3em;
+        font-weight: bold;
     }
     </style>
     """, unsafe_allow_html=True)
 
 ps = PorterStemmer()
 
-# --- HELPER FUNCTIONS (PRESERVING YOUR LOGIC) ---
 def stemming(text):
     y = []
     for i in text.split():
         y.append(ps.stem(i))
-    return "".join(y)
+    return " ".join(y)
 
 @st.cache_resource 
 def load_and_process_data():
@@ -69,8 +68,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             'Title': new_df.iloc[idx]['final_title'].title(),
             'Difficulty': course_difficulty.capitalize(),
             'Rating': course_rating,
-            'URL': new_df.iloc[idx]['url'],
-            'Score': final_score
+            'URL': new_df.iloc[idx]['url']
         })
         if len(recommendations) >= 6: 
             break
@@ -79,22 +77,20 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
 
 # --- SIDEBAR UI ---
 with st.sidebar:
-    st.image("https://img.freepik.com/free-vector/online-certification-concept_23-2148575662.jpg", use_column_width=True)
-    st.title("Search Filters")
-    user_skill = st.text_input("1. Skill to learn", placeholder="e.g. SQL")
-    user_difficulty = st.selectbox("2. Difficulty", ["Beginner", "Intermediate", "Mixed"])
-    user_description = st.text_area("3. Your Goal", placeholder="e.g. project-based learning")
+    # Stable Sidebar Image
+    st.image("https://cdn3d.iconscout.com/3d/premium/thumb/female-student-doing-online-study-on-laptop-illustration-download-in-svg-png-gif-formats--education-courses-home-learning-digital-learning-pack-people-illustrations-3681023.png", width=250)
+    st.title("Filters")
+    user_skill = st.text_input("🎯 What skill?", placeholder="e.g. SQL")
+    user_difficulty = st.selectbox("📊 Level", ["Beginner", "Intermediate", "Mixed"])
+    user_description = st.text_area("📝 Goal", placeholder="e.g. project-based learning")
     
     st.markdown("---")
-    predict_button = st.button('Find Best Courses', use_container_width=True)
+    predict_button = st.button('Search Courses', use_container_width=True)
 
 # --- MAIN PAGE UI ---
-st.title("🎓 Course Recommender AI")
-st.markdown("#### Discover top-rated Coursera courses tailored to your goals.")
-
 if predict_button:
     if user_skill:
-        with st.spinner('Curating your courses...'):
+        with st.spinner('Finding the best courses...'):
             user_query = f"{user_skill} {user_skill} {user_skill} {user_description}"
             stemmed_query = stemming(user_query.lower())
             user_vector = cv.transform([stemmed_query]).toarray()
@@ -102,41 +98,32 @@ if predict_button:
             res_df = recommend_courses(user_vector, new_df, user_difficulty, vectors)
             
             if not res_df.empty:
-                # Replacement for balloons: A subtle "Toast" notification
-                st.toast('Recommendations ready!', icon='✅')
-                
-                st.success(f"We found {len(res_df)} courses matching your request:")
+                st.toast('Results found!', icon='🎉')
+                st.markdown(f"## Best matches for '{user_skill}'")
                 
                 col1, col2 = st.columns(2)
-                
                 for i, row in res_df.iterrows():
                     target_col = col1 if i % 2 == 0 else col2
                     with target_col:
                         st.markdown(f"""
                             <div class="course-card">
-                                <h3 style="color: #6c63ff;">{row['Title']}</h3>
-                                <p><b>Level:</b> {row['Difficulty']} | ⭐ <b>Rating:</b> {row['Rating']}</p>
+                                <h3 style="color: #7e57c2; margin-bottom:0;">{row['Title']}</h3>
+                                <p style="color: gray;"><b>{row['Difficulty']}</b> | ⭐ {row['Rating']}</p>
                             </div>
                         """, unsafe_allow_html=True)
-                        st.link_button("🚀 Start Learning", row['URL'], use_container_width=True)
+                        st.link_button("View Course on Coursera", row['URL'], use_container_width=True)
                         st.write("") 
             else:
-                st.error("We couldn't find a perfect match. Try broadening your keywords!")
+                st.error("No matches found. Try modifying your search!")
     else:
         st.warning("Please enter a skill in the sidebar.")
+
 else:
-    # MAIN SCREEN IMAGE (Female Learner)
-    st.write("")
-    col_img, col_txt = st.columns([1, 1])
-    with col_img:
-        st.image("https://www.freepik.com/free-vector/cartoon-style-programmer-working_5357180.htm#fromView=search&page=1&position=2&uuid=88774223-a390-425a-b2ed-0bbe4d200e70&query=a+girl+working+on+laptop", use_column_width=True)
-    with col_txt:
-        st.markdown("""
-            <br><br><br>
-            <h3>Ready to start your next chapter?</h3>
-            <p style='font-size: 1.2em; color: gray;'>
-                Use the sidebar to tell us what you want to learn. 
-                Our AI analyzes thousands of Coursera courses to find the 
-                perfect balance between relevance and high user ratings.
-            </p>
-        """, unsafe_allow_html=True)
+    # --- WELCOME SCREEN WITH FEMALE ILLUSTRATION ---
+    st.markdown("<br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 2, 1])
+    with c2:
+        # This is a highly reliable direct link to a female student illustration
+        st.image("https://illustrations.popsy.co/purple/studying.svg", width=500)
+        st.markdown("<h1 style='text-align: center; color: #7e57c2;'>Ready to Learn?</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; font-size: 1.2em;'>Use the sidebar to search for courses. Our AI will find the perfect matches for your skills and experience level.</p>", unsafe_allow_html=True)
