@@ -70,7 +70,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             'Rating': course_rating,
             'URL': new_df.iloc[idx]['url']
         })
-        if len(recommendations) >= 6: 
+        if len(recommendations) >= 5: 
             break
             
     return pd.DataFrame(recommendations)
