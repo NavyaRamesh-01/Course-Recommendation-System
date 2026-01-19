@@ -83,7 +83,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors, thre
         course_rating = new_df.iloc[idx]['final_rating']
         raw_similarity = similarities[idx]
         # STOP if the match is too weak
-        if raw_sim < threshold:
+        if raw_similarity < threshold:
             continue
         if user_difficulty.lower() != 'mixed' and course_difficulty != user_difficulty.lower():
             continue
@@ -104,7 +104,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors, thre
 
 # --- FALLBACK LOGIC ---
 def get_trending_courses(df):
-    # Just grab the top 5 highest rated courses in the whole dataset
+    #top 5 highest rated courses in the whole dataset
     trending = df.sort_values(by='final_rating', ascending=False).head(5)
     recommendations = []
     for i in range(len(trending)):
