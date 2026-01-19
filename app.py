@@ -44,7 +44,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             
         final_score = (raw_similarity * 0.9) + (rating_boosts.iloc[idx] * 0.1)
         recommendations.append({
-            'Title': new_df.iloc[idx]['final_title'].capitalize(),
+            'Title': new_df.iloc[idx]['final_title'].title(),
             'Difficulty': course_difficulty.capitalize(),
             'Rating': course_rating,
             'URL': new_df.iloc[idx]['url'],
