@@ -72,7 +72,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
             'URL': new_df.iloc[idx]['url'],
             'Score': final_score
         })
-        if len(recommendations) >= 5: 
+        if len(recommendations) >= 6: 
             break
             
     return pd.DataFrame(recommendations)
@@ -121,3 +121,22 @@ if predict_button:
                         st.link_button("🚀 Start Learning", row['URL'], use_container_width=True)
                         st.write("") 
             else:
+                st.error("We couldn't find a perfect match. Try broadening your keywords!")
+    else:
+        st.warning("Please enter a skill in the sidebar.")
+else:
+    # MAIN SCREEN IMAGE (Female Learner)
+    st.write("")
+    col_img, col_txt = st.columns([1, 1])
+    with col_img:
+        st.image("https://img.freepik.com/free-vector/female-student-with-laptop-studying-online-at-home_23-2148530353.jpg", use_column_width=True)
+    with col_txt:
+        st.markdown("""
+            <br><br><br>
+            <h3>Ready to start your next chapter?</h3>
+            <p style='font-size: 1.2em; color: gray;'>
+                Use the sidebar to tell us what you want to learn. 
+                Our AI analyzes thousands of Coursera courses to find the 
+                perfect balance between relevance and high user ratings.
+            </p>
+        """, unsafe_allow_html=True)
