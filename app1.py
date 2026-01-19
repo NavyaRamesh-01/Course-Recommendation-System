@@ -127,7 +127,7 @@ def recommend_courses(user_vector, new_df, user_difficulty, course_vectors):
 with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
     # Aesthetic Minimalist Icon
-    st.image("https://storyset.com/blog/wp-content/uploads/2021/04/Education-bro.png", use_column_width=True)
+    st.image("https://storyset.com/illustration/typing/cuate", use_column_width=True)
     st.markdown("### Preferences")
     user_skill = st.text_input("What skill?", placeholder="e.g. Data Science")
     user_difficulty = st.selectbox("Level", ["Beginner", "Intermediate", "Mixed"])
@@ -173,6 +173,6 @@ else:
     c1, c2, c3 = st.columns([0.5, 2, 0.5])
     with c2:
         # Using a very aesthetic, soft-colored Storyset illustration
-        st.image("https://storyset.com/illustration/creative-writing/amico/google-color", use_column_width=True)
-        st.markdown("<h1 style='text-align: center;'>Expand your horizons.</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #636e72; font-size: 1.1em;'>Our AI assistant analyzes thousands of data points to find the perfect learning path for your unique career goals.</p>", unsafe_allow_html=True)
+        st.image("https://storyset.com/illustration/studying/pana", use_column_width=True)
+        st.markdown("<h1 style='text-align: center; color: #6c63ff;'>Ready to Start?</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; font-size: 1.2em; color: #555;'>Enter a skill in the sidebar to discover the best Coursera courses hand-picked by AI based on relevance and user ratings.</p>", unsafe_allow_html=True)
